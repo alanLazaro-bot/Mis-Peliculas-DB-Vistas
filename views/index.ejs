@@ -3,6 +3,7 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
   </head>
   <body>
     <h1><%= title %></h1>
@@ -13,8 +14,22 @@
         <a href="/movies">Quiero ver todas las peliculas en cartelera</a>
       </li>
       <li>
-        <a href="/movies/new">Quiero dar de alta una pelicula nueva</a>
+        <a href="/movies/create">Quiero dar de alta una pelicula nueva</a>
+      </li>
+      <li>
+        <a href="/movies/new">Últimas cinco peliculas estrenadas</a>
+      </li>
+      <li>
+        <a href="/movies/recommended">Películas Recomendadas</a>
       </li>
     </ul>
+    <form action="movies/search" method="POST" class="search-form">
+      <input type="text" name="search" placeholder="Buscar películas">
+      <button type="submit" class="search-form_button"><i class="fas fa-search"></i></button>
+    </form>
+    
+      
+
+    
   </body>
 </html>

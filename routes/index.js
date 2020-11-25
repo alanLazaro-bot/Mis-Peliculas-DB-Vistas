@@ -3,10 +3,44 @@ var router = express.Router();
 let db = require ('../database/models');
 
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'DH Movies' });
 });
+
+router.post('/movies/search', function (req, res) {
+  
+  db.Peliculas.findAll({
+    where:{
+      title:{[db.Sequelize.Op.like]:'%'+ req.body.search + '%'}
+
+
+    },
+    order:[
+      ['title','ASC']
+    ]
+
+  
+  })
+  .then(movies=>{ 
+    res.render('movies/index', {movies:movies})
+  })
+  .catch (error =>{
+    res.render('error.ejs',{error:error});
+
+  })
+})
+
+
+
+
+
+
+
+
+
+
 
 router.get('/movies', function (req, res) {
   // devolver todas las peliculas
@@ -22,15 +56,32 @@ router.get('/movies', function (req, res) {
 
 router.get('/movies/new', function (req, res) {
   // buscar la lista de todos los generos para visualizar en el formulario
-  db.Peliculas.findAll()
-  .then(movies=>{ 
-    order:[
-      ['genres','DESC']
-    ]
+  db.Peliculas.findAll({
+  order:[
 
-  res.render('movies/create', {
-    genres : []
+    ['release_date','DESC']
+   
+  ],
+  limit:5
   })
+  .then(movies=>{ 
+
+  res.render('movies/movies-release-date', {movies})
+})
+})
+
+router.get('/movies/recommended', function (req, res) {
+  
+  db.Peliculas.findAll({
+where:{
+    rating: {[db.Sequelize.Op.gt] : 8}
+      }
+
+  })
+  
+  .then(movies=>{ 
+
+  res.render('movies/recommended', {movies})
 })
 })
 
@@ -47,6 +98,8 @@ router.get('/movies/:id', function (req, res) {
 })
 
 })
+
+
 
 router.get('/movies/:id/edit', function (req, res) {
   res.render('movies/edit', {
