@@ -114,6 +114,12 @@ router.patch('/movies/:id', function (req, res) {
 
 router.delete('/movies/:id', function (req, res) {
   // devolver solo la pelicula especificada por el id
+  db.Peliculas.destroy({
+    where:{
+      id:req.params.id
+    }
+  })
+
 })
 
 module.exports = router;
