@@ -17,8 +17,13 @@
                 <p>Fecha de lanzamiento <%= movie.release_date %></p>
                 <p>Rating <%= movie.rating %></p>
                 <p>Premios obtenidos <%= movie.awards %></p>
-                <button>Borrar</button>
-                <button>Modificar</button>
+                <a href="/movies/edit/<%= movie.id %>"> <button>EDITAR</button> </a>
+                
+                <form action="/movies/<%= movie.id%>?_method=DELETE" method="POST" style="display: inline-flex">
+                    <button type="submit">ELIMINAR</button>
+                </form>
+
+            
             </div>
         </div>
     </div>

@@ -3,12 +3,12 @@ var router = express.Router();
 let db = require ('../database/models');
 
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'DH Movies' });
 });
 
+/*Barra de Busqueda*/
 router.post('/movies/search', function (req, res) {
   
   db.Peliculas.findAll({
@@ -21,7 +21,6 @@ router.post('/movies/search', function (req, res) {
       ['title','ASC']
     ]
 
-  
   })
   .then(movies=>{ 
     res.render('movies/index', {movies:movies})
@@ -32,16 +31,7 @@ router.post('/movies/search', function (req, res) {
   })
 })
 
-
-
-
-
-
-
-
-
-
-
+/*Listado de Peliculas*/
 router.get('/movies', function (req, res) {
   // devolver todas las peliculas
   db.Peliculas.findAll()
@@ -53,6 +43,8 @@ router.get('/movies', function (req, res) {
 
   })
 })
+
+/*Primeras 5 peliculas ordenadas por fecha de estreno*/
 
 router.get('/movies/new', function (req, res) {
   // buscar la lista de todos los generos para visualizar en el formulario
@@ -70,6 +62,7 @@ router.get('/movies/new', function (req, res) {
 })
 })
 
+/*Listado de Peliculas con rating mayor que 8*/
 router.get('/movies/recommended', function (req, res) {
   
   db.Peliculas.findAll({
@@ -85,6 +78,8 @@ where:{
 })
 })
 
+/*Devuelve la pelicula especificada segun el id */
+
 router.get('/movies/:id', function (req, res) {
   // devolver solo la pelicula especificada por el id
   db.Peliculas.findByPk(req.params.id)
@@ -99,19 +94,63 @@ router.get('/movies/:id', function (req, res) {
 
 })
 
+/*Permite la edicion de peliculas*/
 
+router.get('/movies/edit/:id', function (req, res) {
 
-router.get('/movies/:id/edit', function (req, res) {
-  res.render('movies/edit', {
-    genres : [],
-    movie : movie,
+  
+    db.Peliculas.findByPk(req.params.id)
+    .then(movie=>{ 
+      res.render('movies/edit', {genres: [], movie : movie })
+    })
+    .catch (error =>{
+      res.render('error.ejs',{error:error});
+  
+    
   })
+  
+   
 })
 
 router.patch('/movies/:id', function (req, res) {
+  db.Peliculas.update({
+    title: req.params.title,
+    rating:req.params.rating,
+    awards:req.params.awards,
+    release_date:req.params.release_date,
+    genero:req.params.genre_id
+    },
+    {
+      where:{
+        id:req.params.id
+      }
+    })
   res.redirect('/movies')
 })
 
+
+router.get('/movies/create', function(req,res){
+  res.render('create.ejs')
+}
+
+
+)
+
+router.post('/movies/create', function(req,res){
+
+  db.Peliculas.create({
+    title: req.params.title,
+    rating:req.params.rating,
+    awards:req.params.awards,
+    release_date:req.params.release_date,
+    genero:req.params.genre_id
+    })
+  res.redirect('/movies')  
+
+  })
+
+
+/*Elimina la pelicula deseada segun el id */
 router.delete('/movies/:id', function (req, res) {
   // devolver solo la pelicula especificada por el id
   db.Peliculas.destroy({
